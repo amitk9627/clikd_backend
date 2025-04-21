@@ -10,8 +10,8 @@ const router = express.Router();
 
 router.post("/import", uploadGoogleSheet);
 router.get("/tasks", getTask);
-router.post("/task", addTask);
+router.post("/tasks", addTask);
 router.put("/tasks/:id", updateTask);
-router.post("/tasks/:id", deleteTask);
+router.delete("/tasks/:id", deleteTask);
 
 module.exports = router;
