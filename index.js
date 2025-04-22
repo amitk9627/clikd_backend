@@ -5,6 +5,7 @@ const dotenv = require("dotenv").config();
 
 // routes
 const taskRoutes = require("./routes/task.js");
+const userRoutes = require("./routes/user.js");
 
 const app = express();
 const PORT = process.env.PORT;
@@ -27,6 +28,7 @@ app.use(express.json());
 
 // Routes
 app.use("/", taskRoutes);
+app.use("/user", userRoutes);
 
 // Start Server
 app.listen(PORT, () => {
