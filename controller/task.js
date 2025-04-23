@@ -31,7 +31,7 @@ const uploadGoogleSheet = async (req, res) => {
           const row = rows[i];
           const title = row.title?.trim();
           const description = row.description?.trim();
-          const dueDate = row.dueDate?.trim();
+          let dueDate = row.dueDate?.trim();
 
           if (!title || !description || !dueDate) {
             errors.push({
@@ -50,6 +50,8 @@ const uploadGoogleSheet = async (req, res) => {
               });
               continue;
             }
+            const [day, month, year] = dueDate.split("-");
+            dueDate = `${year}-${month}-${day}`;
 
             const task = new Tasks({ title, description, dueDate });
             await task.save();
@@ -201,14 +203,19 @@ const addTask = async (req, res) => {
 };
 const getTask = async (req, res) => {
   try {
+    let title = req.query.title;
     const page = parseInt(req.query.page) || 1;
     const limit = 5;
     const skip = (page - 1) * limit;
 
     const totalTasks = await Tasks.countDocuments();
     const totalPages = Math.ceil(totalTasks / limit);
+    let query = {};
 
-    const tasks = await Tasks.find({})
+    if (title!='') {
+      query.title = { $regex: title, $options: "i" };
+    }
+    const tasks = await Tasks.find(query)
       .sort({ createdAt: -1 }) // newest first
       .skip(skip)
       .limit(limit);
